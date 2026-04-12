@@ -1,0 +1,466 @@
+:root {
+  /* Constant Dark Mode */
+  --bg-primary: #0B0C10;
+  --bg-secondary: #161A22;
+  --text-primary: #ECECEC;
+  --text-muted: #969EA5;
+  --accent-color: #a31719;
+  --accent-glow: rgba(163, 23, 25, 0.4);
+  --secondary-color: #e1b80f;
+  --secondary-glow: rgba(225, 184, 15, 0.4);
+  --border-color: rgba(225, 184, 15, 0.15);
+  --font-heading: 'Cinzel', serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  transition: background-color 1.2s ease, color 1.2s ease;
+  cursor: none;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+a,
+button,
+input,
+textarea {
+  cursor: none;
+}
+
+/* Background Image */
+.side-bg-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 55vw;
+  height: 100vh;
+  z-index: 1;
+  /* Above canvas, below noise and content */
+  pointer-events: none;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 40%);
+  mask-image: linear-gradient(to right, transparent 0%, black 40%);
+}
+
+.side-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.4;
+  filter: grayscale(0.2) contrast(1.2) brightness(0.9);
+}
+
+/* Noise overlay */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.04;
+  background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+}
+
+/* Interactive Canvas */
+#realm-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Enter Screen */
+.enter-screen {
+  position: fixed;
+  inset: 0;
+  background-color: #030305;
+  color: var(--text-primary);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 1.5s ease;
+  cursor: none;
+}
+
+.enter-simple-text {
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  letter-spacing: 0.2rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.app-container {
+  width: 100%;
+  padding: 2rem 5vw;
+  position: relative;
+  z-index: 10;
+}
+
+/* Typography elements */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  display: inline-block;
+}
+
+/* Header & View Counter */
+.realm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 0 4rem 0;
+  width: 100%;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-mark {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+.logo-text {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  letter-spacing: 0.1rem;
+  text-transform: uppercase;
+}
+
+.view-counter-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--secondary-color);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 1.1rem;
+  transition: border-color 0.3s ease;
+}
+
+.view-counter-badge:hover {
+  border-color: var(--secondary-color);
+}
+
+.eye-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Sections */
+section {
+  max-width: 650px;
+  margin-bottom: 6rem;
+}
+
+section:last-of-type {
+  margin-bottom: 0;
+}
+
+.hero-section {
+  padding: 4rem 0;
+}
+
+.greeting {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+}
+
+.name {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+}
+
+.bio {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 600px;
+}
+
+/* Sharp Diamond Custom Cursor */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  background-color: transparent;
+  border: 2px solid var(--accent-color);
+  pointer-events: none;
+  z-index: 999999;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.custom-cursor-trail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--secondary-color);
+  pointer-events: none;
+  z-index: 999998;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: border-color 1.2s ease, width 0.3s ease, height 0.3s ease, background-color 0.3s, filter 0.3s;
+}
+
+/* Interaction States for Cursor */
+body[data-hovering="true"] .custom-cursor-trail {
+  width: 40px;
+  height: 40px;
+  background-color: var(--accent-glow);
+  filter: drop-shadow(0 0 10px var(--accent-color));
+}
+
+/* Lanyard Card */
+.lanyard-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 2rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  transition: all 1.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.lanyard-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: var(--accent-color);
+}
+
+.lanyard-avatar-container {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.discord-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+}
+
+.discord-status {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #747f8d;
+  /* offline by default */
+  border: 3px solid var(--bg-secondary);
+}
+
+.discord-username {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--secondary-color);
+}
+
+.discord-tag {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: 0.3rem;
+}
+
+.discord-activity {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Crypto Card */
+.treasury-desc {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.crypto-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.crypto-address-box {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+.crypto-address-box:hover {
+  border-color: var(--accent-color);
+  transform: translateX(5px);
+}
+
+.crypto-icon {
+  width: 24px;
+  height: 24px;
+  background-color: var(--accent-color);
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  flex-shrink: 0;
+}
+
+.icon-btc { -webkit-mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/bitcoin.svg'); mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/bitcoin.svg'); }
+.icon-eth { -webkit-mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/ethereum.svg'); mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/ethereum.svg'); }
+.icon-xrp { -webkit-mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/xrp.svg'); mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/xrp.svg'); }
+.icon-ltc { -webkit-mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/litecoin.svg'); mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/litecoin.svg'); }
+
+.crypto-address {
+  flex: 1;
+  font-family: monospace;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  word-break: break-all;
+}
+
+.crypto-address-box::after {
+  content: 'Copied!';
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--accent-color);
+  color: var(--text-primary);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.crypto-address-box.copied {
+  border-color: var(--accent-color);
+}
+
+.crypto-address-box.copied::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.copy-icon-right {
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+}
+
+.crypto-address-box:hover .copy-icon-right {
+  color: var(--text-primary);
+}
+
+.crypto-address-box.copied .copy-icon-right {
+  color: var(--accent-color);
+  transform: scale(1.2);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .name {
+    font-size: 2.5rem;
+  }
+
+  .enter-title {
+    font-size: 2.5rem;
+    text-align: center;
+  }
+
+  .crypto-address-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .lanyard-card {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+}

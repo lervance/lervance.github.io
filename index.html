@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
+  <title>Lervance</title>
+  <!-- Add some medieval-looking fonts from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <!-- Custom Cursor -->
+  <div class="custom-cursor" id="cursor"></div>
+  <div class="custom-cursor-trail" id="cursor-trail"></div>
+
+  <!-- Enter Overlay -->
+  <div id="enter-screen" class="enter-screen">
+    <h1 class="enter-simple-text">Click to enter</h1>
+  </div>
+
+  <!-- Audio Player (Hidden) -->
+  <audio id="bg-music" loop>
+    <source src="assets/sounds/theme.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="roar-sfx">
+    <source src="assets/sounds/roar.mp3" type="audio/mpeg">
+  </audio>
+
+  <canvas id="realm-canvas"></canvas>
+
+  <div class="side-bg-container">
+    <img src="./assets/images/bg.png" alt="Background" class="side-bg-img" />
+  </div>
+
+  <div class="noise-overlay"></div>
+
+  <main class="app-container" id="smooth-wrapper">
+
+    <!-- Header -->
+    <header class="realm-header">
+      <div class="brand">
+        <span class="logo-mark">VII</span>
+        <span class="logo-text">7even Kingdoms</span>
+        <div class="view-counter-badge" title="Kingdom Visitors">
+          <i data-lucide="eye" class="eye-icon"></i>
+          <span id="view-count">...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <p class="greeting">Lord of the Code</p>
+        <h1 class="name">Lervance</h1>
+        <p class="bio">
+          Never forget what you are, for surely the world will not.<br>Wear it like armor and it can never be used to
+          hurt you.
+        </p>
+      </div>
+    </section>
+
+    <!-- Discord Presence Section -->
+    <section class="presence-section">
+      <h2 class="section-title">The Lion's Cord</h2>
+      <div class="lanyard-card" id="lanyard-card">
+        <div class="lanyard-avatar-container">
+          <img id="discord-avatar" class="discord-avatar" src="" alt="Discord Avatar" />
+          <div id="discord-status" class="discord-status"></div>
+        </div>
+        <div class="lanyard-info">
+          <h3 id="discord-username" class="discord-username">Summoning...</h3>
+          <p id="discord-game" class="discord-activity"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Crypto Donation Section -->
+    <section class="treasury-section">
+      <h2 class="section-title">The Royal Treasury</h2>
+      <p class="treasury-desc">Send your digital gold via the network.</p>
+      <div class="crypto-card">
+        <div class="crypto-address-box" data-copy="bc1qrlu54224krsupc6mcrdcf3cq5quy5c4d4qqxu3">
+          <div class="crypto-icon icon-btc"></div>
+          <span class="crypto-address" id="btc-address">bc1qrlu54224krsupc6mcrdcf3cq5quy5c4d4qqxu3</span>
+          <i data-lucide="copy" class="copy-icon-right"></i>
+        </div>
+        <div class="crypto-address-box" data-copy="0xb69103DBDb43fde3E4349797cdd33c6d817f0B09">
+          <div class="crypto-icon icon-eth"></div>
+          <span class="crypto-address" id="eth-address">0xb69103DBDb43fde3E4349797cdd33c6d817f0B09</span>
+          <i data-lucide="copy" class="copy-icon-right"></i>
+        </div>
+        <div class="crypto-address-box" data-copy="rphgg1L2MorGrpdYVV6Jz6326CkS1Remsk">
+          <div class="crypto-icon icon-xrp"></div>
+          <span class="crypto-address" id="xrp-address">rphgg1L2MorGrpdYVV6Jz6326CkS1Remsk</span>
+          <i data-lucide="copy" class="copy-icon-right"></i>
+        </div>
+        <div class="crypto-address-box" data-copy="LfWLL2m1mKywEBgGKWvdViCupuExYCvEhD">
+          <div class="crypto-icon icon-ltc"></div>
+          <span class="crypto-address" id="ltc-address">LfWLL2m1mKywEBgGKWvdViCupuExYCvEhD</span>
+          <i data-lucide="copy" class="copy-icon-right"></i>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>

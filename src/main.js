@@ -1,37 +1,36 @@
 import './styles/global.css';
 import Lenis from '@studio-freight/lenis';
-import { createIcons, Copy, Bitcoin, Coins, Eye } from 'lucide';
+import { createIcons, Copy, Bitcoin, Coins, Eye, MessageCircle, Instagram, Music2, Gamepad2 } from 'lucide';
+import { trackWebsiteVisit } from './viewTracker';
 
-// Initialize Icons
 createIcons({
   icons: {
     Copy,
     Bitcoin,
     Coins,
-    Eye
+    Eye,
+    MessageCircle,
+    Instagram,
+    Music2,
+    Gamepad2
   }
 });
 
-// Settings
 const DISCORD_USER_ID = '825485336951390239';
 
-// DOM Elements
 const enterScreen = document.getElementById('enter-screen');
 const bgMusic = document.getElementById('bg-music');
 const roarSfx = document.getElementById('roar-sfx');
 
-// Hit Counter API (No Auth required)
-fetch('https://api.counterapi.dev/v1/7even-kingdoms-portfolio/visits/up')
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById('view-count').innerText = data.count || "...";
+trackWebsiteVisit()
+  .then((count) => {
+    document.getElementById('view-count').innerText = String(count);
   })
-  .catch(e => {
+  .catch(() => {
     console.log('Error fetching view count');
-    document.getElementById('view-count').innerText = "10,581";
+    document.getElementById('view-count').innerText = "8065";
   });
 
-// Lenis Smooth Scroll Configuration
 const lenis = new Lenis({
   duration: 1.2,
   easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -47,39 +46,38 @@ function raf(time) {
   requestAnimationFrame(raf);
 }
 
-// Custom Sharp Diamond Cursor Logic
 const cursor = document.getElementById('cursor');
 const cursorTrail = document.getElementById('cursor-trail');
 let mouseX = 0;
 let mouseY = 0;
+let cursorX = 0;
+let cursorY = 0;
 let trailX = 0;
 let trailY = 0;
 
 document.addEventListener('mousemove', (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
-
-  // Instant follow for main dot
-  cursor.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) rotate(45deg)`;
 });
 
-// Render loop for trail (smooth interpolation)
 function renderCursor() {
-  trailX += (mouseX - trailX) * 0.15;
-  trailY += (mouseY - trailY) * 0.15;
+  cursorX += (mouseX - cursorX) * 0.28;
+  cursorY += (mouseY - cursorY) * 0.28;
+  trailX += (mouseX - trailX) * 0.12;
+  trailY += (mouseY - trailY) * 0.12;
+
+  cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%) rotate(45deg)`;
   cursorTrail.style.transform = `translate(${trailX}px, ${trailY}px) translate(-50%, -50%) rotate(45deg)`;
   requestAnimationFrame(renderCursor);
 }
 renderCursor();
 
-// Add hover effect states for cursor
 const iteractableElements = document.querySelectorAll('a, button, input, textarea');
 iteractableElements.forEach(el => {
   el.addEventListener('mouseenter', () => document.body.setAttribute('data-hovering', 'true'));
   el.addEventListener('mouseleave', () => document.body.setAttribute('data-hovering', 'false'));
 });
 
-// Enter Screen & Audio Init
 bgMusic.volume = 0.4;
 if (roarSfx) roarSfx.volume = 0.8;
 
@@ -87,7 +85,6 @@ enterScreen.addEventListener('click', () => {
   bgMusic.play().catch(e => console.log('Missing theme audio'));
   if (roarSfx) roarSfx.play().catch(e => console.log('Missing roar audio'));
 
-  // Fade out screen
   enterScreen.style.opacity = '0';
   setTimeout(() => {
     enterScreen.style.display = 'none';
@@ -95,7 +92,6 @@ enterScreen.addEventListener('click', () => {
   }, 1500);
 });
 
-// Copy to clipboard logic
 document.querySelectorAll('.crypto-address-box').forEach(btn => {
   btn.addEventListener('click', (e) => {
     const textToCopy = btn.getAttribute('data-copy');
@@ -108,7 +104,6 @@ document.querySelectorAll('.crypto-address-box').forEach(btn => {
   });
 });
 
-// Lanyard API Connection
 function connectLanyard() {
   const ws = new WebSocket('wss://api.lanyard.rest/socket');
 
@@ -141,18 +136,15 @@ function updateDiscordPresence(data) {
 
   const { discord_user, discord_status, activities, spotify } = data;
 
-  // Set Display Name and Username
   const displayName = discord_user.display_name || discord_user.username;
   discordUsername.innerHTML = `${displayName} <span class="discord-tag">(@${discord_user.username})</span>`;
 
-  // Set Avatar
   const avatarUrl = discord_user.avatar
     ? `https://cdn.discordapp.com/avatars/${discord_user.id}/${discord_user.avatar}.png?size=256`
     : `https://cdn.discordapp.com/embed/avatars/${parseInt(discord_user.discriminator || '0') % 5}.png`;
 
   discordAvatar.src = avatarUrl;
 
-  // Status color mapping
   const statusColors = {
     online: '#43b581',
     idle: '#faa61a',
@@ -162,7 +154,6 @@ function updateDiscordPresence(data) {
 
   discordStatus.style.backgroundColor = statusColors[discord_status] || statusColors.offline;
 
-  // Set Activity / Spotify
   if (spotify) {
     discordGame.innerText = `Listening to ${spotify.song} by ${spotify.artist}`;
   } else if (activities && activities.length > 0) {
@@ -183,7 +174,6 @@ function updateDiscordPresence(data) {
 
 connectLanyard();
 
-// Interactive Particle Background (Permanent Dark Theme)
 const canvas = document.getElementById('realm-canvas');
 const ctx = canvas.getContext('2d');
 
@@ -198,7 +188,10 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 const particles = [];
-const PARTICLE_COUNT = 150;
+const PARTICLE_COUNT = 70;
+const interactRadius = 150;
+const interactRadiusSquared = interactRadius * interactRadius;
+let lastParticleFrame = 0;
 
 for (let i = 0; i < PARTICLE_COUNT; i++) {
   particles.push({
@@ -211,35 +204,42 @@ for (let i = 0; i < PARTICLE_COUNT; i++) {
 }
 
 function renderParticles() {
-  // Clear canvas
+  const now = performance.now();
+  if (now - lastParticleFrame < 33) {
+    requestAnimationFrame(renderParticles);
+    return;
+  }
+  lastParticleFrame = now;
+
+  if (document.hidden) {
+    requestAnimationFrame(renderParticles);
+    return;
+  }
+
   ctx.clearRect(0, 0, width, height);
-  const interactRadius = 150;
 
   for (let i = 0; i < particles.length; i++) {
     const p = particles[i];
 
-    // Constant slow float/fall
-    p.y += (Math.random() * 1.5 + 0.5);
-    p.x += Math.cos(p.life * 10) * 0.5;
+    p.y += (Math.random() * 0.9 + 0.35);
+    p.x += Math.cos(p.life * 10) * 0.3;
 
-    // Mix of Red (#a31719) and Gold (#e1b80f) particles
     const isPrimaryColor = Math.random() > 0.3;
     ctx.fillStyle = isPrimaryColor
-      ? `rgba(163, 23, 25, ${p.life * 0.8})`  // Deep Red
-      : `rgba(225, 184, 15, ${p.life * 0.8})`; // Gold
+      ? `rgba(163, 23, 25, ${p.life * 0.8})`
+      : `rgba(225, 184, 15, ${p.life * 0.8})`;
 
-    // Mouse Interaction (Push away based on mouse position)
     const dx = p.x - mouseX;
     const dy = p.y - mouseY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    const distanceSquared = dx * dx + dy * dy;
 
-    if (distance < interactRadius) {
+    if (distanceSquared > 0 && distanceSquared < interactRadiusSquared) {
+      const distance = Math.sqrt(distanceSquared);
       const force = (interactRadius - distance) / interactRadius;
-      p.x += (dx / distance) * force * 5;
-      p.y += (dy / distance) * force * 5;
+      p.x += (dx / distance) * force * 4;
+      p.y += (dy / distance) * force * 4;
     }
 
-    // Respawn logic based on bounds
     if (p.x < 0) p.x = width;
     if (p.x > width) p.x = 0;
     if (p.y > height) {
@@ -247,11 +247,9 @@ function renderParticles() {
       p.x = Math.random() * width;
     }
 
-    // Flicker/Fade life
     p.life -= 0.005;
     if (p.life <= 0) p.life = p.maxLife;
 
-    // Draw
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
     ctx.fill();
@@ -260,5 +258,4 @@ function renderParticles() {
   requestAnimationFrame(renderParticles);
 }
 
-// Ensure first render starts
 requestAnimationFrame(renderParticles);

@@ -1,5 +1,4 @@
 :root {
-  /* Constant Dark Mode */
   --bg-primary: #0B0C10;
   --bg-secondary: #161A22;
   --text-primary: #ECECEC;
@@ -27,9 +26,7 @@ body {
   transition: background-color 1.2s ease, color 1.2s ease;
   cursor: none;
   scrollbar-width: none;
-  /* Firefox */
   -ms-overflow-style: none;
-  /* IE and Edge */
 }
 
 ::-webkit-scrollbar {
@@ -43,7 +40,6 @@ textarea {
   cursor: none;
 }
 
-/* Background Image */
 .side-bg-container {
   position: fixed;
   top: 0;
@@ -51,7 +47,6 @@ textarea {
   width: 55vw;
   height: 100vh;
   z-index: 1;
-  /* Above canvas, below noise and content */
   pointer-events: none;
   overflow: hidden;
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 40%);
@@ -67,7 +62,6 @@ textarea {
   filter: grayscale(0.2) contrast(1.2) brightness(0.9);
 }
 
-/* Noise overlay */
 .noise-overlay {
   position: fixed;
   top: 0;
@@ -80,7 +74,6 @@ textarea {
   background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
 }
 
-/* Interactive Canvas */
 #realm-canvas {
   position: fixed;
   top: 0;
@@ -91,7 +84,6 @@ textarea {
   pointer-events: none;
 }
 
-/* Enter Screen */
 .enter-screen {
   position: fixed;
   inset: 0;
@@ -133,7 +125,6 @@ textarea {
   z-index: 10;
 }
 
-/* Typography elements */
 h1,
 h2,
 h3,
@@ -150,7 +141,6 @@ h4 {
   display: inline-block;
 }
 
-/* Header & View Counter */
 .realm-header {
   display: flex;
   justify-content: space-between;
@@ -202,7 +192,6 @@ h4 {
   height: 18px;
 }
 
-/* Sections */
 section {
   max-width: 650px;
   margin-bottom: 6rem;
@@ -239,7 +228,6 @@ section:last-of-type {
   max-width: 600px;
 }
 
-/* Sharp Diamond Custom Cursor */
 .custom-cursor {
   position: fixed;
   top: 0;
@@ -268,7 +256,6 @@ section:last-of-type {
   will-change: transform;
 }
 
-/* Interaction States for Cursor */
 body[data-hovering="true"] .custom-cursor-trail {
   width: 40px;
   height: 40px;
@@ -276,7 +263,6 @@ body[data-hovering="true"] .custom-cursor-trail {
   filter: drop-shadow(0 0 10px var(--accent-color));
 }
 
-/* Lanyard Card */
 .lanyard-card {
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
@@ -323,7 +309,6 @@ body[data-hovering="true"] .custom-cursor-trail {
   height: 16px;
   border-radius: 50%;
   background-color: #747f8d;
-  /* offline by default */
   border: 3px solid var(--bg-secondary);
 }
 
@@ -347,7 +332,6 @@ body[data-hovering="true"] .custom-cursor-trail {
   font-size: 0.95rem;
 }
 
-/* Socials Section */
 .socials-desc {
   color: var(--text-muted);
   margin-bottom: 1.5rem;
@@ -404,7 +388,6 @@ body[data-hovering="true"] .custom-cursor-trail {
   text-overflow: ellipsis;
 }
 
-/* Crypto Card */
 .treasury-desc {
   color: var(--text-muted);
   margin-bottom: 1.5rem;
@@ -501,7 +484,6 @@ body[data-hovering="true"] .custom-cursor-trail {
   transform: scale(1.2);
 }
 
-/* Responsive */
 @media (max-width: 600px) {
   .name {
     font-size: 2.5rem;

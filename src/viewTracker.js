@@ -1,5 +1,5 @@
 const COUNTER_API_URL = 'https://api.counterapi.dev/v1/7even-kingdoms-portfolio/visits/up';
-const COUNTER_START_VALUE = 8065;
+const COUNTER_START_VALUE = 8065; // lol
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;

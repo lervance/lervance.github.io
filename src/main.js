@@ -1,6 +1,7 @@
 import './styles/global.css';
 import Lenis from '@studio-freight/lenis';
-import { createIcons, Copy, Bitcoin, Coins, Eye } from 'lucide';
+import { createIcons, Copy, Bitcoin, Coins, Eye, MessageCircle, Instagram, Music2, Gamepad2 } from 'lucide';
+import { trackWebsiteVisit } from './viewTracker';
 
 // Initialize Icons
 createIcons({
@@ -8,7 +9,11 @@ createIcons({
     Copy,
     Bitcoin,
     Coins,
-    Eye
+    Eye,
+    MessageCircle,
+    Instagram,
+    Music2,
+    Gamepad2
   }
 });
 
@@ -20,15 +25,13 @@ const enterScreen = document.getElementById('enter-screen');
 const bgMusic = document.getElementById('bg-music');
 const roarSfx = document.getElementById('roar-sfx');
 
-// Hit Counter API (No Auth required)
-fetch('https://api.counterapi.dev/v1/7even-kingdoms-portfolio/visits/up')
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById('view-count').innerText = data.count || "...";
+trackWebsiteVisit()
+  .then((count) => {
+    document.getElementById('view-count').innerText = String(count);
   })
-  .catch(e => {
+  .catch(() => {
     console.log('Error fetching view count');
-    document.getElementById('view-count').innerText = "?";
+    document.getElementById('view-count').innerText = '8065';
   });
 
 // Lenis Smooth Scroll Configuration
@@ -52,21 +55,24 @@ const cursor = document.getElementById('cursor');
 const cursorTrail = document.getElementById('cursor-trail');
 let mouseX = 0;
 let mouseY = 0;
+let cursorX = 0;
+let cursorY = 0;
 let trailX = 0;
 let trailY = 0;
 
 document.addEventListener('mousemove', (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
-
-  // Instant follow for main dot
-  cursor.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) rotate(45deg)`;
 });
 
-// Render loop for trail (smooth interpolation)
+// Smooth cursor interpolation for both layers.
 function renderCursor() {
-  trailX += (mouseX - trailX) * 0.15;
-  trailY += (mouseY - trailY) * 0.15;
+  cursorX += (mouseX - cursorX) * 0.28;
+  cursorY += (mouseY - cursorY) * 0.28;
+  trailX += (mouseX - trailX) * 0.12;
+  trailY += (mouseY - trailY) * 0.12;
+
+  cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%) rotate(45deg)`;
   cursorTrail.style.transform = `translate(${trailX}px, ${trailY}px) translate(-50%, -50%) rotate(45deg)`;
   requestAnimationFrame(renderCursor);
 }
@@ -198,7 +204,10 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 const particles = [];
-const PARTICLE_COUNT = 150;
+const PARTICLE_COUNT = 70;
+const interactRadius = 150;
+const interactRadiusSquared = interactRadius * interactRadius;
+let lastParticleFrame = 0;
 
 for (let i = 0; i < PARTICLE_COUNT; i++) {
   particles.push({
@@ -211,16 +220,28 @@ for (let i = 0; i < PARTICLE_COUNT; i++) {
 }
 
 function renderParticles() {
+  const now = performance.now();
+  // Run particle updates at ~30 FPS to reduce CPU/GPU pressure.
+  if (now - lastParticleFrame < 33) {
+    requestAnimationFrame(renderParticles);
+    return;
+  }
+  lastParticleFrame = now;
+
+  if (document.hidden) {
+    requestAnimationFrame(renderParticles);
+    return;
+  }
+
   // Clear canvas
   ctx.clearRect(0, 0, width, height);
-  const interactRadius = 150;
 
   for (let i = 0; i < particles.length; i++) {
     const p = particles[i];
 
     // Constant slow float/fall
-    p.y += (Math.random() * 1.5 + 0.5);
-    p.x += Math.cos(p.life * 10) * 0.5;
+    p.y += (Math.random() * 0.9 + 0.35);
+    p.x += Math.cos(p.life * 10) * 0.3;
 
     // Mix of Red (#a31719) and Gold (#e1b80f) particles
     const isPrimaryColor = Math.random() > 0.3;
@@ -231,12 +252,13 @@ function renderParticles() {
     // Mouse Interaction (Push away based on mouse position)
     const dx = p.x - mouseX;
     const dy = p.y - mouseY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    const distanceSquared = dx * dx + dy * dy;
 
-    if (distance < interactRadius) {
+    if (distanceSquared > 0 && distanceSquared < interactRadiusSquared) {
+      const distance = Math.sqrt(distanceSquared);
       const force = (interactRadius - distance) / interactRadius;
-      p.x += (dx / distance) * force * 5;
-      p.y += (dy / distance) * force * 5;
+      p.x += (dx / distance) * force * 4;
+      p.y += (dy / distance) * force * 4;
     }
 
     // Respawn logic based on bounds

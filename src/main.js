@@ -1,6 +1,6 @@
 import './styles/global.css';
 import Lenis from '@studio-freight/lenis';
-import { createIcons, Copy, Bitcoin, Coins, Eye, MessageCircle, Instagram, Music2, Gamepad2 } from 'lucide';
+import { createIcons, Copy, Bitcoin, Coins, Eye, MessageCircle, Music2, Gamepad2 } from 'lucide';
 import { trackWebsiteVisit } from './viewTracker';
 
 // Initialize Icons
@@ -11,7 +11,6 @@ createIcons({
     Coins,
     Eye,
     MessageCircle,
-    Instagram,
     Music2,
     Gamepad2
   }
